@@ -1,4 +1,4 @@
-package com.anix.vidflow.ui.theme
+package com.anix.android.anixplayer.vidflow.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

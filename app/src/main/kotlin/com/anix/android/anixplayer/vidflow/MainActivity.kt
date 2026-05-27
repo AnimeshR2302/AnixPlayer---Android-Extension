@@ -1,4 +1,4 @@
-package com.anix.vidflow
+package com.anix.android.anixplayer.vidflow
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.anix.vidflow.ui.theme.AnixPlayerTheme
+import com.anix.android.anixplayer.vidflow.ui.theme.AnixPlayerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

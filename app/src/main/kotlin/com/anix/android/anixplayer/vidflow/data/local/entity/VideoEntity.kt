@@ -1,4 +1,4 @@
-package com.anix.vidflow.data.local.entity
+package com.anix.android.anixplayer.vidflow.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
