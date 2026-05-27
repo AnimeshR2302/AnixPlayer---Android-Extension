@@ -1,28 +1,37 @@
 # Folders
+.agent/
+.codex/
 .gradle/
 .idea/
-.vscode/
+.kotlin/
+.playwright-mcp/
 .util/
-.agent/
+.vscode/
 
 build/
+gradle/
+!gradle/libs.versions.toml
+input_images/
+
 captures/
 .externalNativeBuild/
 .cxx/
 
 # Files
 local.properties
-*.log
-*.aab
-*.apk
+
 output-metadata.json
-*.iml
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
+google-services.json
+
+*.log
+*.aab
+*.apk
+*.iml
 *.jks
 *.keystore
-google-services.json
 *.hprof
 *.md
 *.txt

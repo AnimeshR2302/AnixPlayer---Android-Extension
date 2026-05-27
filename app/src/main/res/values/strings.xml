@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AnixPlayer</string>
+    <string name="settings_title_text">Settings</string>
+    <string name="seek_unavailable_info_text">Seek unavailable</string>
 </resources>
