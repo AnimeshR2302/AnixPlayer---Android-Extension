@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.AnixPlayer" parent="Theme.MaterialComponents.Light" />
+</resources>
