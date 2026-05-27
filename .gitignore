@@ -3,6 +3,7 @@
 .idea/
 .vscode/
 .util/
+.agent/
 
 build/
 captures/
