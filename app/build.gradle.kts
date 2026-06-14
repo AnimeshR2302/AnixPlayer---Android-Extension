@@ -8,7 +8,9 @@ plugins {
 
 android {
     namespace = "com.anix.android.anixplayer"
-    compileSdk { version = release(36) }
+    compileSdk {
+        version = release(37)
+    }
 
     defaultConfig {
         applicationId = "com.anix.android.anixplayer"
@@ -81,4 +83,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     ksp(libs.moshi.kotlin.codegen)
     ksp(libs.hilt.compiler)
+    
+    // Feature Modules
+    implementation(project(":feature:gallery"))
+    implementation(project(":feature:video-player"))
 }

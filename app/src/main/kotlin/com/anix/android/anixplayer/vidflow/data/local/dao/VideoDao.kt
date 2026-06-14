@@ -23,4 +23,7 @@ interface VideoDao {
 
     @Query("DELETE FROM video_history WHERE id = :id")
     suspend fun deleteVideo(id: String)
+
+    @Query("UPDATE video_history SET subtitlePath = :subtitlePath WHERE id = :id")
+    suspend fun updateSubtitlePath(id: String, subtitlePath: String?)
 }

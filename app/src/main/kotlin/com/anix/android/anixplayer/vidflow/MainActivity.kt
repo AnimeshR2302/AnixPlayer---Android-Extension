@@ -17,8 +17,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -39,12 +41,40 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AnixPlayerTheme {
+                val mainViewModel: MainViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val subtitlePath by mainViewModel.subtitlePath.collectAsState()
+
+                var currentScreen by remember { mutableStateOf("start") }
+                var selectedVideoUri by remember { mutableStateOf<android.net.Uri?>(null) }
+                
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PlayerStartScreen(
-                        refreshKey = permissionRefreshKey,
-                        onRefreshPermissions = { permissionRefreshKey++ },
-                        modifier = Modifier.padding(innerPadding),
-                    )
+                    if (currentScreen == "start") {
+                        PlayerStartScreen(
+                            refreshKey = permissionRefreshKey,
+                            onRefreshPermissions = { permissionRefreshKey++ },
+                            onNavigateToPlayer = { currentScreen = "gallery" },
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    } else if (currentScreen == "gallery") {
+                        com.anix.android.anixplayer.gallery.VideoGalleryScreen(
+                            onVideoSelected = { uri, title ->
+                                selectedVideoUri = uri
+                                mainViewModel.loadVideoInfo(uri.toString(), title)
+                                currentScreen = "player"
+                            }
+                        )
+                    } else if (currentScreen == "player") {
+                        com.anix.android.anixplayer.videoplayer.PlayerScreen(
+                            videoUri = selectedVideoUri,
+                            subtitleUri = subtitlePath?.let { android.net.Uri.parse(it) },
+                            onNavigateBack = { currentScreen = "gallery" },
+                            onSubtitleSelected = { subUri ->
+                                selectedVideoUri?.let { uri ->
+                                    mainViewModel.updateSubtitle(uri.toString(), subUri?.toString())
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -60,6 +90,7 @@ class MainActivity : ComponentActivity() {
 fun PlayerStartScreen(
     refreshKey: Int,
     onRefreshPermissions: () -> Unit,
+    onNavigateToPlayer: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -103,7 +134,11 @@ fun PlayerStartScreen(
                 }
             },
         ) {
-            Text("Start Player")
+            Text("Start Overlay Player")
+        }
+
+        Button(onClick = onNavigateToPlayer) {
+            Text("Open Local Player UI")
         }
 
         if (!canDrawOverlays) {
@@ -147,6 +182,7 @@ fun PlayerStartScreenPreview() {
         PlayerStartScreen(
             refreshKey = 0,
             onRefreshPermissions = {},
+            onNavigateToPlayer = {},
         )
     }
 }

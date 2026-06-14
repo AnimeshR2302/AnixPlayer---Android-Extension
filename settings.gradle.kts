@@ -24,4 +24,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "AnixPlayer"
 include(":app")
- 
+include(":feature:gallery")
+include(":feature:home")
+include(":feature:overlay")
+include(":feature:video-player")
