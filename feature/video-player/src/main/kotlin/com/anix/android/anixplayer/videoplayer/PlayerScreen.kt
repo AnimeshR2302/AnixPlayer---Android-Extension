@@ -25,10 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.ui.PlayerView
-
 import androidx.compose.material.icons.filled.ClosedCaption
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun PlayerScreen(

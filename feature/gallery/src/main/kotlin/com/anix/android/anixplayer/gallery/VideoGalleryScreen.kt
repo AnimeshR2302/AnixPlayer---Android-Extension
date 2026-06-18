@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,15 +32,19 @@ import androidx.core.content.ContextCompat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VideoGalleryScreen(
+    refreshKey: Int = 0,
     viewModel: VideoGalleryViewModel = hiltViewModel(),
     onVideoSelected: (Uri, String) -> Unit
 ) {
     val videos by viewModel.videos.collectAsState()
     val context = LocalContext.current
     
-    var hasPermission by remember {
+    var hasPermission by remember(refreshKey) {
         mutableStateOf(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (Build.VERSION.SDK_INT >= 34) {
+                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED
             } else {
                 ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
@@ -58,16 +61,18 @@ fun VideoGalleryScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (!hasPermission) {
-            val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    LaunchedEffect(refreshKey) {
+        if (hasPermission) {
+            viewModel.loadVideos()
+        } else {
+            val permissions = if (Build.VERSION.SDK_INT >= 34) {
+                arrayOf(Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
             } else {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
             permissionLauncher.launch(permissions)
-        } else {
-            viewModel.loadVideos()
         }
     }
 
@@ -84,11 +89,8 @@ fun VideoGalleryScreen(
         if (!hasPermission) {
             Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
                 Button(onClick = { 
-                    val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
-                    } else {
-                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    }
+                    val permissions =
+                        arrayOf(Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
                     permissionLauncher.launch(permissions)
                 }) {
                     Text("Grant Storage Permission")
